@@ -1,2 +1,2 @@
-# using dependencies instead of @Subcomponent
 # RxDaggerDemo
+using dependencies instead of @Subcomponent
