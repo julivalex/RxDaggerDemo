@@ -1,10 +1,15 @@
 package com.kotlin.note.rxdaggerdemo.base;
 
-import io.reactivex.disposables.CompositeDisposable;
+import rx.Observable;
+import rx.Observer;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 public abstract class BasePresenter implements Presenter {
 
-    private CompositeDisposable compositeDisposable;
+    private CompositeSubscription compositeSubscription;
 
     @Override
     public void onCreate() {
@@ -21,12 +26,12 @@ public abstract class BasePresenter implements Presenter {
         configureSubscription();
     }
 
-    private CompositeDisposable configureSubscription() {
+    private CompositeSubscription configureSubscription() {
 
-        if(compositeDisposable == null || compositeDisposable.isDisposed()) {
-            compositeDisposable = new CompositeDisposable();
+        if(compositeSubscription == null || compositeSubscription.isUnsubscribed()) {
+            compositeSubscription = new CompositeSubscription();
         }
-        return compositeDisposable;
+        return compositeSubscription;
     }
 
     @Override
@@ -34,9 +39,18 @@ public abstract class BasePresenter implements Presenter {
         unSubscribeAll();
     }
 
-    private void unSubscribeAll() {
-        if(compositeDisposable != null) {
-            compositeDisposable.dispose();
+    protected void unSubscribeAll() {
+        if(compositeSubscription != null) {
+            compositeSubscription.unsubscribe();
         }
+    }
+
+    protected <F> void subscribe(Observable<F> observable, Observer<F> observer) {
+        Subscription subscription = observable
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.computation())
+                .subscribe(observer);
+        configureSubscription().add(subscription);
     }
 }

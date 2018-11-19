@@ -15,12 +15,17 @@ public class FlowerApplication extends Application {
 
     @Override
     public void onCreate() {
+        resolveDependency();
         super.onCreate();
+    }
+
+    private void resolveDependency() {
         apiComponent = DaggerApiComponent
                 .builder()
                 .networkComponent(getNetworkComponent())
                 .build();
     }
+
 
     public ApiComponent getApiComponent() {
         return apiComponent;

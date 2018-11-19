@@ -7,7 +7,7 @@ import dagger.Provides;
 import retrofit2.Retrofit;
 
 @Module
-public class ApiModule {
+class ApiModule {
 
     @AppScope
     @Provides
