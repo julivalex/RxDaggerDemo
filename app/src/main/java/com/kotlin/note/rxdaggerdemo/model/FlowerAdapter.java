@@ -66,6 +66,7 @@ public class FlowerAdapter extends RecyclerView.Adapter<FlowerAdapter.ViewHolder
             photo = itemView.findViewById(R.id.flowerPhoto);
             name = itemView.findViewById(R.id.flowerName);
             price = itemView.findViewById(R.id.flowerPrice);
+            itemView.setOnClickListener(this);
         }
 
         @Override
