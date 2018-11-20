@@ -5,8 +5,10 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
+
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
+
 
 @Module
 public class NetworkModule {
@@ -25,14 +27,14 @@ public class NetworkModule {
 
     @Singleton
     @Provides
-    RxJavaCallAdapterFactory provideRxJava2CallAdapterFactory() {
-        return RxJavaCallAdapterFactory.create();
+    RxJava2CallAdapterFactory provideRxJava2CallAdapterFactory() {
+        return RxJava2CallAdapterFactory.create();
     }
 
     @Singleton
     @Provides
     Retrofit provideRetrofit(GsonConverterFactory gsonConverterFactory,
-                             RxJavaCallAdapterFactory callAdapterFactory) {
+                             RxJava2CallAdapterFactory callAdapterFactory) {
         return new Retrofit.Builder()
                 .baseUrl(baseUrl)
                 .addConverterFactory(gsonConverterFactory)

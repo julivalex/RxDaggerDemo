@@ -4,7 +4,7 @@ import com.kotlin.note.rxdaggerdemo.model.FlowerResponse;
 
 import java.util.List;
 
-import rx.Observable;
+import io.reactivex.Observable;
 
 public interface FlowerViewInterface {
 

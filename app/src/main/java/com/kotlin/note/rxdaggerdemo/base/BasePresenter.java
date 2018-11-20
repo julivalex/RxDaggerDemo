@@ -1,15 +1,20 @@
 package com.kotlin.note.rxdaggerdemo.base;
 
-import rx.Observable;
-import rx.Observer;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
+import com.kotlin.note.rxdaggerdemo.model.FlowerResponse;
 
-public abstract class BasePresenter implements Presenter {
+import java.util.List;
 
-    private CompositeSubscription compositeSubscription;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.observers.DisposableObserver;
+import io.reactivex.schedulers.Schedulers;
+
+public abstract class BasePresenter extends DisposableObserver<List<FlowerResponse>>
+        implements Presenter {
+
+    private CompositeDisposable compositeDisposable;
 
     @Override
     public void onCreate() {
@@ -26,12 +31,12 @@ public abstract class BasePresenter implements Presenter {
         configureSubscription();
     }
 
-    private CompositeSubscription configureSubscription() {
+    private CompositeDisposable configureSubscription() {
 
-        if(compositeSubscription == null || compositeSubscription.isUnsubscribed()) {
-            compositeSubscription = new CompositeSubscription();
+        if(compositeDisposable == null || compositeDisposable.isDisposed()) {
+            compositeDisposable = new CompositeDisposable();
         }
-        return compositeSubscription;
+        return compositeDisposable;
     }
 
     @Override
@@ -40,17 +45,18 @@ public abstract class BasePresenter implements Presenter {
     }
 
     protected void unSubscribeAll() {
-        if(compositeSubscription != null) {
-            compositeSubscription.unsubscribe();
+        if(compositeDisposable != null) {
+            compositeDisposable.dispose();
         }
     }
 
-    protected <F> void subscribe(Observable<F> observable, Observer<F> observer) {
-        Subscription subscription = observable
+    protected <F> void subscribe(Observable<F> observable, DisposableObserver<F> observer) {
+        Disposable disposable = observable
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.computation())
-                .subscribe(observer);
-        configureSubscription().add(subscription);
+                .subscribeWith(observer);
+
+        configureSubscription().add(disposable);
     }
 }

@@ -5,9 +5,7 @@ import com.kotlin.note.rxdaggerdemo.service.FlowerViewInterface;
 
 import java.util.List;
 
-import rx.Observer;
-
-public class FlowerPresenter extends BasePresenter implements Observer<List<FlowerResponse>> {
+public class FlowerPresenter extends BasePresenter {
 
     private FlowerViewInterface viewInterface;
 
@@ -16,7 +14,7 @@ public class FlowerPresenter extends BasePresenter implements Observer<List<Flow
     }
 
     @Override
-    public void onCompleted() {
+    public void onComplete() {
         viewInterface.onCompleted();
     }
 
@@ -34,4 +32,5 @@ public class FlowerPresenter extends BasePresenter implements Observer<List<Flow
         unSubscribeAll();
         subscribe(viewInterface.getFlowers(), FlowerPresenter.this);
     }
+
 }
